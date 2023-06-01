@@ -1,0 +1,50 @@
+<div class="content-wrapper">
+
+    <app-breadcrumb></app-breadcrumb>
+
+    <section class="content">
+        <div class="container-fluid">
+
+
+            <div class="row">
+
+                <section class="col-lg-12 connectedSortable">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Unit Details.</h3>
+                            <a routerLink="/units" class="float-right btn btn-primary"> <i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="unitsDataTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>#</th>
+                                        <th>Unit</th>
+                                        <th>No of Employees</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let unit of unitsDetails; let i = index">
+                                        <td>
+                                            <button class="btn btn-sm" title="Edit" style="color: rgb(240, 221, 15)" (click)="editUnit()" routerLink="/manageUnits" [queryParams]="{id: unit.unit_id}"> <i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-sm" title="Delete" style="color: red" (click)="deleteUnit(unit.unit_id)" routerLink="/manageUnits" [queryParams]="{id: unit.unit_id}"> <i class="fa fa-trash"></i></button>
+
+                                        </td>
+                                        <td>{{i + 1 }}</td>
+                                        <td>{{unit.Name}}</td>
+                                        <td>{{unit.unitNumber}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+</div>

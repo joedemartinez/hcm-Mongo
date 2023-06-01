@@ -1,0 +1,55 @@
+<div class="login-page">
+	<div class="login-box">
+
+		<div class="card card-outline card-primary">
+			<div class="card-header text-center">
+				<a class="h1"><b>Admin</b>LTE</a>
+			</div>
+			<div class="card-body">
+				<p class="login-box-msg">Sign in to start your session</p>
+				<form [formGroup]='loginFb' (ngSubmit)="submitForm()">
+					<div class="input-group mb-3">
+						<input type="text" 
+						class="form-control" 
+						placeholder="Staff ID" 
+						formControlName="emp_id"
+						required
+						[ngClass]="{'is-invalid' : loginFb.controls['emp_id'].invalid && loginFb.controls['emp_id'].touched }"
+						>
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="fas fa-user"></span>
+							</div>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<input type="password" 
+						class="form-control" 
+						placeholder="Password (max 8)"
+						formControlName="password"
+						required
+						[ngClass]="{'is-invalid' : loginFb.controls['password'].invalid && loginFb.controls['password'].touched}"
+						>
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="fas fa-lock"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-8">
+						</div>
+
+						<div class="col-4">
+							<button type="submit" class="btn btn-primary btn-block" [disabled]="loginFb.invalid">Sign In</button>
+						</div>
+
+					</div>
+				</form>
+
+			</div>
+
+		</div>
+
+	</div>
+</div>

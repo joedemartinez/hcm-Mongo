@@ -1,0 +1,68 @@
+<div class="content-wrapper">
+
+    <app-breadcrumb></app-breadcrumb>
+
+    <section class="content">
+        <div class="container-fluid">
+
+
+            <div class="row">
+
+                <section class="col-lg-12 connectedSortable">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Employee Details.</h3>
+                            <button (click)="openModal()" class="float-right btn btn-primary"> <i class="fas fa-user-plus"></i> Add Employee</button>
+                            <button *ngIf="priv === 'admin'" (click)="editMode()" class="float-right btn btn-primary mr-3"> <i class="fas fa-edit"></i> Edit Mode</button>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="empDataTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Photo</th>
+                                        <th>Emp ID</th>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                        <th>DoB</th>
+                                        <th>Marital Status</th>
+                                        <th>Phone No</th>
+                                        <th>Email</th>
+                                        <th>Highest Qualification</th>
+                                        <th>Staff Status</th>
+                                        <th>Years at Ministry</th>
+                                        <th>Unit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let emp of empDetails; let i = index">
+                                        <td>{{i +1 }}</td>
+                                        <td>
+                                            <img *ngIf="emp.photo != '' " src='assets/img/{{emp.photo}}' height="90px">
+                                            <img *ngIf="emp.photo == ''" src='assets/img/dummy.png' height="90px">
+                                        </td>
+                                        <td>{{emp.emp_id}}</td>
+                                        <td>{{emp.name}}</td>
+                                        <td>{{emp.emp_gender}}</td>
+                                        <td>{{conDate(emp.emp_dob)}}</td>
+                                        <td>{{emp.emp_maritalstatus}}</td>
+                                        <td>{{emp.emp_phoneno}}</td>
+                                        <td>{{emp.emp_email}}</td>
+                                        <td>{{emp.emp_highestqualification}}</td>
+                                        <td>{{emp.emp_staffstatus}}</td>
+                                        <td>{{emp.emp_yearswithministry}}</td>
+                                        <td>{{emp.Unit}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+</div>

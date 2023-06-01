@@ -1,0 +1,69 @@
+<div class="card-header">
+    <h3 class="card-title">Employee Details</h3>
+</div>
+
+<form [formGroup]="addPromotion" (ngSubmit)="submitForm()">
+    <div class="card-body">
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="emp_id"> Employee</label>
+                    <select class="form-control" formControlName="emp_id" required
+                    [ngClass]="{'is-invalid' : addPromotion.controls['emp_id'].invalid && addPromotion.controls['emp_id'].touched }">
+                        <option value="" selected disabled>Select Option</option>
+                        <option *ngFor="let emp of empList;" value="{{emp.emp_id}}">{{emp.name}}</option>
+                    </select>
+            </div>
+            <div class="form-group col-md-6">
+                
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="post_from">Post From</label>
+                <input type="text" class="form-control" placeholder="Enter Post From" formControlName="post_from" required
+                [ngClass]="{'is-invalid' : addPromotion.controls['post_from'].invalid && addPromotion.controls['post_from'].touched }">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="post_to">Post To</label>
+                <input type="text" class="form-control" placeholder="Enter Post To" formControlName="post_to" required
+                    [ngClass]="{'is-invalid' : addPromotion.controls['post_to'].invalid && addPromotion.controls['post_to'].touched }">
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="region">Region </label>
+                <input type="text" class="form-control" placeholder="Enter Region" formControlName="region"
+                    required
+                    [ngClass]="{'is-invalid' : addPromotion.controls['region'].invalid && addPromotion.controls['region'].touched }">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="effectiveDate">Effective Date</label>
+                <input type="date" class="form-control" placeholder="Enter Effective Date" formControlName="effectiveDate"
+                    required
+                    [ngClass]="{'is-invalid' : addPromotion.controls['effectiveDate'].invalid && addPromotion.controls['effectiveDate'].touched }">
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="releaseDate">Release Date</label>
+                <input type="date" class="form-control" placeholder="Enter Release Date" formControlName="releaseDate"
+                    required
+                    [ngClass]="{'is-invalid' : addPromotion.controls['releaseDate'].invalid && addPromotion.controls['releaseDate'].touched }">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="assumptionDate">Assumption Date</label>
+                <input type="date" class="form-control" placeholder="Enter Assumption Date" formControlName="assumptionDate"
+                    required
+                    [ngClass]="{'is-invalid' : addPromotion.controls['assumptionDate'].invalid && addPromotion.controls['assumptionDate'].touched }">
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <button type="button" class="btn btn-danger float-left" (click)="closeModal()">Cancel</button>
+        <button type="submit" [disabled]="addPromotion.invalid" class="btn btn-primary float-right">Submit</button>
+    </div>
+</form>

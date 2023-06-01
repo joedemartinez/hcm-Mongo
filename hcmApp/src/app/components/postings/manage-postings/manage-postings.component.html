@@ -1,0 +1,61 @@
+<div class="content-wrapper">
+
+    <app-breadcrumb></app-breadcrumb>
+
+    <section class="content">
+        <div class="container-fluid">
+
+
+            <div class="row">
+
+                <section class="col-lg-12 connectedSortable">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Manage Posting.</h3>
+                            <a routerLink="/postings" class="float-right btn btn-primary"> <i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="postingDataTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>#</th>
+                                        <th>Emp ID</th>
+                                        <th>Name</th>
+                                        <th>Post From</th>
+                                        <th>Post To</th>
+                                        <th>Region</th>
+                                        <th>Effective Date</th>
+                                        <th>Release Date</th>
+                                        <th>Assumption Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let posting of postingDetails; let i = index">
+                                        <td>
+                                            <button class="btn btn-sm" title="Edit" style="color: rgb(240, 221, 15)" (click)="editPosting()" routerLink="/managePostings" [queryParams]="{id: posting.id}"> <i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-sm" title="Delete" style="color: red" (click)="deletePosting(posting.id)" routerLink="/managePostings" [queryParams]="{id: posting.id}"> <i class="fa fa-trash"></i></button>
+                                        </td>
+                                        <td>{{i + 1 }}</td>
+                                        <td>{{posting.emp_id}}</td>
+                                        <td>{{posting.name}}</td>
+                                        <td>{{posting.post_from}}</td>
+                                        <td>{{posting.post_to}}</td>
+                                        <td>{{posting.region}}</td>
+                                        <td>{{ conDate(posting.effectiveDate) }}</td>
+                                        <td>{{ conDate(posting.releaseDate) }}</td>
+                                        <td>{{ conDate(posting.assumptionDate) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+</div>

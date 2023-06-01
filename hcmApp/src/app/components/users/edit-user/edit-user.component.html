@@ -1,0 +1,31 @@
+<div class="card-header">
+    <h3 class="card-title">User Details.</h3>
+</div>
+
+<form [formGroup]="addUser" (ngSubmit)="submitForm()">
+    <div class="card-body">
+        <div class=" row col-md-12">
+            <div class="form-group col-md-12">
+                <label for="emp_id"> Employee</label>
+                <select class="form-control" formControlName="emp_id" required
+                    [ngClass]="{'is-invalid' : addUser.controls['emp_id'].invalid && addUser.controls['emp_id'].touched }">
+                        <option *ngFor="let emp of empList;" value="{{emp.emp_id}}" selected>{{emp.name}}</option>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="user_type"> User Type</label>
+                <select class="form-control" formControlName="user_type" required
+                    [ngClass]="{'is-invalid' : addUser.controls['user_type'].invalid && addUser.controls['user_type'].touched }">
+                    <option *ngFor="let emp of empList;" value="{{emp.user_type}}" selected>{{emp.user_type}}</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                    </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <button type="button" class="btn btn-danger float-left" (click)="closeModal()">Cancel</button>
+        <button type="submit" [disabled]="addUser.invalid" class="btn btn-primary float-right">Submit</button>
+    </div>
+</form>

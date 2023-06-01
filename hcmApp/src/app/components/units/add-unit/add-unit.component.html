@@ -1,0 +1,21 @@
+<div class="card-header">
+    <h3 class="card-title">Unit Details</h3>
+</div>
+
+<form [formGroup]="addUnit" (ngSubmit)="submitForm()">
+    <div class="card-body">
+        <div class=" row col-md-12">
+            <div class="form-group col-md-12">
+                <label for="emp_id"> Unit Name</label>
+                <input type="text" class="form-control" placeholder="Enter Unit Name" formControlName="Name"
+                    required
+                    [ngClass]="{'is-invalid' : addUnit.controls['Name'].invalid && addUnit.controls['Name'].touched }">
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <button type="button" class="btn btn-danger float-left" (click)="closeModal()">Cancel</button>
+        <button type="submit" [disabled]="addUnit.invalid" class="btn btn-primary float-right">Submit</button>
+    </div>
+</form>

@@ -1,0 +1,137 @@
+<div class="card-header">
+    <h3 class="card-title">Employee Details</h3>
+</div>
+
+<form [formGroup]="addEmp" (ngSubmit)="submitForm()">
+    <div class="card-body">
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="emp_id"> Employee ID</label>
+                <input type="text" class="form-control" placeholder="Enter employee ID" formControlName="emp_id"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_id'].invalid && addEmp.controls['emp_id'].touched }">
+            </div>
+            <div class="form-group col-md-6">
+                
+            </div>
+        </div>
+        <div class=" row col-md-12">
+            <div class="form-group col-md-4">
+                <label for="firstname">First Name</label>
+                <input type="text" class="form-control" placeholder="Enter first name" formControlName="emp_firstname"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_firstname'].invalid && addEmp.controls['emp_firstname'].touched }">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="middlename">Middle Name</label>
+                <input type="text" class="form-control" placeholder="Enter middle name" formControlName="emp_middlename"
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_middlename'].invalid && addEmp.controls['emp_middlename'].touched }">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="lastname">Last Name</label>
+                <input type="text" class="form-control" placeholder="Enter last name" formControlName="emp_surname"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_surname'].invalid && addEmp.controls['emp_surname'].touched }">
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="gender">Gender</label>
+                <select class="form-control" formControlName="emp_gender" required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_gender'].invalid && addEmp.controls['emp_gender'].touched }">
+                    <option value="" selected disabled>Select Option</option>
+                    <option value="Male" >Male</option>
+                    <option value="Female" >Female</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="dob">DoB</label>
+                <input type="date" class="form-control" placeholder="Enter DoB" formControlName="emp_dob" required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_dob'].invalid && addEmp.controls['emp_dob'].touched }">
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-4">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" placeholder="Enter email address" formControlName="emp_email"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_email'].invalid && addEmp.controls['emp_email'].touched }">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="marital status">Marital Status</label>
+                    <select  class="form-control" formControlName="emp_maritalstatus" required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_maritalstatus'].invalid && addEmp.controls['emp_maritalstatus'].touched }">
+                    <option value="" selected disabled>Select Option</option>
+                    <option value="Single" >Single</option>
+                    <option value="Married" >Married</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="phoneno">Phone No</label>
+                <input type="text" class="form-control" placeholder="Enter Phone No" formControlName="emp_phoneno"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_phoneno'].invalid && addEmp.controls['emp_phoneno'].touched }">
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-4">
+                <label for="Qualification">Highest Qualification</label>
+                <input type="text" class="form-control" placeholder="Enter Highest Qualification" formControlName="emp_highestqualification"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_highestqualification'].invalid && addEmp.controls['emp_highestqualification'].touched }">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="staff level">Staff Level</label>
+                <select  class="form-control" formControlName="emp_staffstatus" required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_staffstatus'].invalid && addEmp.controls['emp_staffstatus'].touched }">
+                    <option value="" selected disabled>Select Option</option>
+                    <option *ngIf="empDetails" value="{{empDetails.emp_staffstatus}}" selected>{{empDetails.emp_staffstatus}}</option>
+                    <option value="Senior Staff" >Senior Staff</option>
+                    <option value="Junior Staff" >Junior Staff</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="emp_yearswithministry">Years with Ministry</label>
+                <input type="number" class="form-control" placeholder="Enter Years with Ministry" formControlName="emp_yearswithministry"
+                    required
+                    [ngClass]="{'is-invalid' : addEmp.controls['emp_yearswithministry'].invalid && addEmp.controls['emp_yearswithministry'].touched }">
+            </div>
+        </div>
+
+        <div class=" row col-md-12">
+            <div class="form-group col-md-6">
+                <label for="dept_id">Unit</label>
+                <select class="form-control" formControlName="unit_id" required
+                    [ngClass]="{'is-invalid' : addEmp.controls['unit_id'].invalid && addEmp.controls['unit_id'].touched }">
+                    <option value="" selected disabled>Select Option</option>
+                    <option *ngFor="let unit of unitList;" value="{{unit.unit_id}}">{{unit.Name}}</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="photo">Photo</label>
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" formControlName="photo" id="photo" accept="image/*" (change)="onFileSelected($event)">
+                        <label class="custom-file-label" for="photo">{{imageName}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="photo"></label>
+                <div class="input-group">
+                    <div class="custom-file">
+                        <img [src]="url" height="90px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <button type="button" class="btn btn-danger float-left" (click)="closeModal()">Cancel</button>
+        <button type="submit" [disabled]="addEmp.invalid" class="btn btn-primary float-right">Submit</button>
+    </div>
+</form>
