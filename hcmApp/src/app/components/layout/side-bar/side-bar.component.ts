@@ -29,19 +29,19 @@ export class SideBarComponent {
   getVal(){
     //Emp
     this.http.get("http://localhost:8089/count/employees").subscribe((results: any) => {
-      this.emp =  results.data
+      this.emp =  results.data[0]?.count
     })
     //Exits
     this.http.get("http://localhost:8089/count/exits").subscribe((results: any) => {
-      this.exits =  results.data
+      this.exits =  results.data[0]?.count
     })
     //units
     this.http.get("http://localhost:8089/count/units").subscribe((results: any) => {
-      this.units =  results.data
+      this.units =  results.data[0]?.count 
     })
     //Users
     this.http.get("http://localhost:8089/count/users").subscribe((results: any) => {
-      this.users = results.data
+      this.users = results.data[0]?.count
     })
   }
 

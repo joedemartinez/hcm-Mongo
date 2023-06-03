@@ -34,8 +34,8 @@ export class LoginComponent {
 
     //make http post request
     this.http.post("http://localhost:8080/api/login/"+this.loginFb.value.emp_id, this.loginFb.value).subscribe((results: any) => {
-
-      if(results.status){
+      
+      if(results.status === true){
         // set local storage vals
         localStorage.setItem('loggedIn', 'true')
         localStorage.setItem('emp_id', results.data[0].emp_id) // set storage val
@@ -49,7 +49,7 @@ export class LoginComponent {
           );
            
       }else{
-        this.toastr.warning('Oops!! Wrong Staff ID or Password', 'Error!');
+        this.toastr.warning(results.message, 'Error!');
           this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
               this.router.navigate(['/login'])
           );

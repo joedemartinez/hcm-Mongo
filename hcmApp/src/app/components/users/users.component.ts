@@ -34,10 +34,9 @@ export class UsersComponent {
 
 
   getUsersDetails(){
-    //users
-    this.http.get("http://localhost:8089/users").subscribe((results: any) => {
+    //using aggregate to join users and emp table
+    this.http.get("http://localhost:8089/userEmp").subscribe((results: any) => {
       this.usersDetails =  results.data
-      
       setTimeout(()=>{
         $('#usersDataTable').DataTable( {
           pagingType: 'simple_numbers',

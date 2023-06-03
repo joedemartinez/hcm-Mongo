@@ -42,7 +42,6 @@ server.listen(8080, function check( err) {
     // const verified = bcrypt.compareSync('dummy', password_hash); // comparing already existing
 
 server.post("/api/login/:id", (req, res) => {
-    
     let {emp_id, password} = req.body
     let sql = "SELECT *, (Select concat(emp_firstname, ' ', emp_middlename, ' ', emp_surname) from emp_table where emp_id = ut.emp_id) as name, (Select photo from emp_table where emp_id = ut.emp_id) as photo FROM users_table ut WHERE emp_id = '"+emp_id+"'";
     
@@ -50,12 +49,16 @@ server.post("/api/login/:id", (req, res) => {
         if(err){
             res.send({status: false, message: "Oops! User do not exist"})
         }else{
-            result = results[0].password
-            const verified = bcrypt.compareSync(password, result);
-            if (verified) {
-                res.send({status: true, data: results})
-            } else {
-                res.send({status: false, message: "Oops! Error occured, Wrong Staff ID or Password"})
+            if (results.length > 0){
+                result = results[0].password
+                const verified = bcrypt.compareSync(password, result);
+                if (verified) {
+                    res.send({status: true, data: results})
+                } else {
+                    res.send({status: false, message: "Oops! Error occured, Wrong Staff ID or Password"})
+                }   
+            }else{
+                res.send({status: false, message: "Oops! User do not exist"})
             }
             
         }

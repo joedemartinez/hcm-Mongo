@@ -26,25 +26,16 @@ export class EmployeesComponent {
    
     this.breadcrumb.setPageDetails('Employees','Employees','/employees','')//breadcrumb values
 
-    this.getEmpVal();//get total employees
-
     this.getEmpDetails();//get employees details
 
     this.priv = localStorage.getItem('user_type')
   }
 
- 
-  //get number of employees
-  getEmpVal(){
-    //Emp
-    this.http.get("http://localhost:8080/api/count/emps").subscribe((results: any) => {
-      this.emp =  results.data[0]['count']
-    })
-  }
+
 
   getEmpDetails(){
     //Emp
-    this.http.get("http://localhost:8080/api/employees").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empDetails =  results.data
       
       setTimeout(()=>{
