@@ -192,15 +192,26 @@ app.get('/count/exits', (req, res) => {
 })
 
 //trial
-// app.get('/trial', (req, res) => {
-//     db.collection('units')
-//     .find({Name: 'Internal Audit'})
-//     .then(() => {
-//         res.status(200).json({status: true, data: exits})
-//     }).catch(()=> {
-//         res.status(200).json({error: "Could not fetch"})
-//     })
-// })
+app.get('/trial', (req, res) => {
+    // db.collection('units')
+    // .find({Name: 'Internal Audit'})
+    // .then(() => {
+    //     res.status(200).json({status: true, data: exits})
+    // }).catch(()=> {
+    //     res.status(200).json({error: "Could not fetch"})
+    // })
+
+    let exits = db.collection('emp_table').aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "emp_id",
+            foreignField: "emp_id",
+            as: "result"
+          }
+        }
+    ])
+})
 // if (ObjectId.isValid(req.params.id))
 // app.get('/trial/:id', (req, res) => {
 //   if (ObjectId.isValid(req.params.id)){
