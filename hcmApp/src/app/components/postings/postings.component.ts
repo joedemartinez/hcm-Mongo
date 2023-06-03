@@ -33,7 +33,7 @@ export class PostingsComponent {
     //posting
     this.http.get("http://localhost:8089/postings").subscribe((results: any) => {
       this.postingDetails =  results.data
-      console.log(this.postingDetails)
+      // console.log(this.postingDetails)
       setTimeout(()=>{
         $('#postingDataTable').DataTable( {
           pagingType: 'simple_numbers',

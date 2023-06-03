@@ -36,7 +36,7 @@
                                     <tr *ngFor="let posting of postingDetails; let i = index">
                                         <td>{{i + 1 }}</td>
                                         <td>{{posting.emp_id}}</td>
-                                        <td>{{posting.name}}</td>
+                                        <td>{{posting.result[0].emp_firstname+' '+posting.result[0].emp_middlename+' '+posting.result[0].emp_surname}}</td>
                                         <td>{{posting.post_from}}</td>
                                         <td>{{posting.post_to}}</td>
                                         <td>{{posting.region}}</td>
