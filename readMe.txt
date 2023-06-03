@@ -5,8 +5,9 @@ INSTRUCTIONS
 2. open a terminal in the mysql folder
 3. run the command "nodemon server.js" to start and run the database "hcm"
     if port number is being used by another, change the port
-
-4. Go into the hcmApp and run the angular project "ng serve"
+4. open a terminal in the mongodb folder
+5. run the command "nodemon app.js" to start and run the database
+6. Go into the hcmApp and run the angular project "ng serve"
 
 
 
