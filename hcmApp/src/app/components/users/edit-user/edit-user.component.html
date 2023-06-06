@@ -9,7 +9,7 @@
                 <label for="emp_id"> Employee</label>
                 <select class="form-control" formControlName="emp_id" required
                     [ngClass]="{'is-invalid' : addUser.controls['emp_id'].invalid && addUser.controls['emp_id'].touched }">
-                        <option *ngFor="let emp of empList;" value="{{emp.emp_id}}" selected>{{emp.name}}</option>
+                        <option *ngFor="let emp of empList;" value="{{emp.emp_id}}" selected>{{emp.result[0].emp_firstname+' '+emp.result[0].emp_middlename+' '+emp.result[0].emp_surname}}</option>
                 </select>
             </div>
             <div class="form-group col-md-12">

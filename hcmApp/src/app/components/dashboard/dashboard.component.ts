@@ -40,7 +40,10 @@ export class DashboardComponent implements AfterViewInit {
     //Exits
     this.http.get("http://localhost:8089/count/exits").subscribe((results: any) => {
       this.exits =  results.data[0]?.count
-      
+      //if there's no document
+      if (!this.exits) {
+        this.exits =  0
+      }
     })
     //units
     this.http.get("http://localhost:8089/count/units").subscribe((results: any) => {
@@ -51,12 +54,13 @@ export class DashboardComponent implements AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    this.http.get("http://localhost:8080/api/chartVal").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/chartVal").subscribe((results: any) => {
       this.chartData = results.data
+      console.log(this.chartData)
 
       for (let i = 0; i < this.chartData.length; i++) {
         this.chartUnit.push(this.chartData[i].Name)
-        this.chartNo.push(this.chartData[i].unitNumber)
+        this.chartNo.push(this.chartData[i].employees.length)
       }
 
       const x = Object.values(this.chartUnit)

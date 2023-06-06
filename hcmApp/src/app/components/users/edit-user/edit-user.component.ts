@@ -51,7 +51,7 @@ export class EditUserComponent {
 
   ngOnInit(){
     if (this.id) {
-      this.http.get("http://localhost:8080/api/users/"+this.id).subscribe((results: any) => {
+      this.http.get("http://localhost:8089/users/"+this.id).subscribe((results: any) => {
          this.empList = results.data//setting result to modalData variable
         //  console.log(this.empList)
          //set validations
@@ -67,7 +67,7 @@ export class EditUserComponent {
   submitForm(){
 
     //make http post request
-    this.http.put("http://localhost:8080/api/users/update/"+this.id, this.addUser.value).subscribe((results: any) => {
+    this.http.patch("http://localhost:8089/users/update/"+this.id, this.addUser.value).subscribe((results: any) => {
 
       if(results.status){
         this.toastr.success('User Updated Successfully', 'Success!');

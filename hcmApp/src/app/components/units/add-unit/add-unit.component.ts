@@ -43,7 +43,7 @@ export class AddUnitComponent {
     // console.log(this.id)
 
     if (this.id) {
-    this.http.get("http://localhost:8080/api/units/"+this.id).subscribe((results: any) => {
+    this.http.get("http://localhost:8089/units/"+this.id).subscribe((results: any) => {
         this.unitDetails = results.data//setting result to modalData variable
         // console.log(this.unitDetails)
         //set validations
@@ -57,9 +57,9 @@ export class AddUnitComponent {
 
   submitForm(){
 
-    if(this.id > ''){
+    if(this.id > ''){ //update
       //make http post request
-      this.http.put("http://localhost:8080/api/units/update/"+this.id, this.addUnit.value).subscribe((results: any) => {
+      this.http.patch("http://localhost:8089/units/update/"+this.id, this.addUnit.value).subscribe((results: any) => {
 
       if(results.status){
         this.toastr.success('Unit Updated Successfully', 'Success!'); 
@@ -76,7 +76,7 @@ export class AddUnitComponent {
       })
     }else{// new unit
       //make http post request
-        this.http.post("http://localhost:8080/api/units/add", this.addUnit.value).subscribe((results: any) => {
+        this.http.post("http://localhost:8089/units/add", this.addUnit.value).subscribe((results: any) => {
 
         if(results.status){
           this.toastr.success('Unit Added Successfully', 'Success!'); 

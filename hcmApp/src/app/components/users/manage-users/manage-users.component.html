@@ -37,11 +37,7 @@
                                         <td>{{i + 1 }}</td>
                                         <td>{{user.emp_id}}</td>
                                         <td>
-                                            <em *ngFor="let emp of empList">
-                                                <b   
-                                                    *ngIf="user.emp_id === emp.emp_id"> {{emp.emp_firstname+' '+emp.emp_middlename+' '+emp.emp_surname}}
-                                                </b>
-                                            </em>      
+                                            {{user.result[0].emp_firstname+' '+user.result[0].emp_middlename+' '+user.result[0].emp_surname}}     
                                         </td>
                                         <td>{{user.user_type}}</td>
                                     </tr>

@@ -400,7 +400,7 @@ server.get("/api/usersList", (req, res) => {
         if(err){
             console.log("Oops! Error Fetching Users")
         }else{
-            res.send({status: true, data: results})
+            res.send({status: true, data: results}) 
         }
     })
 })

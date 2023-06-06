@@ -3,16 +3,16 @@ const { connectToDb, getDb } = require('./db')
 const bodyParser = require('body-parser');
 const cors = require('cors') //CORS policy: No 'Access-Control-Allow-Origin' h 
 const bcrypt = require('bcryptjs');
-const {ObjectId, MongoClient} = require('mongodb')
+const {ObjectId} = require('mongodb')
 
 
-//init app
+//INIT APP
 const app = express()
 app.use(bodyParser.json()) 
 app.use(cors()) //CORS policy: No 'Access-Control-Allow-Origin' 
 app.use(express.json())
 
-//db conn
+//DB CONN
 let db
 connectToDb( (fn) => {
     if (!fn) {
@@ -28,8 +28,62 @@ connectToDb( (fn) => {
 
 // ROUTES
 
+//LOGIN
+//checking for authN
+app.post("/login", (req, res) => {
+  let {emp_id, password} = req.body
+  
+  const agg = [
+    {
+      $match: {
+        emp_id: emp_id
+      }
+    },
+    {
+      $lookup: {
+        from: "emp_table",
+        let: { empId: "$emp_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$emp_id", "$$empId"] }
+            }
+          },
+          {
+            $project: {
+              name: {
+                $concat: ["$emp_firstname", " ", "$emp_middlename", " ", "$emp_surname"]
+              },
+              photo: "$photo"
+            }
+          }
+        ],
+        as: "employee"
+      }
+    },
+    {
+      $limit: 1 // Optional: If you only want to retrieve a single document
+    }
+  ];
+  const coll = db.collection('users').aggregate(agg);
+  coll.toArray().then((doc) => {
+    if (doc.length > 0){
+      result = doc[0].password
+      const verified = bcrypt.compareSync(password, result);
+      if (verified) {
+          res.send({status: true, data: doc})
+      } else {
+          res.send({status: false, message: "Oops! Error occured, Wrong Staff ID or Password"})
+      }   
+    }else{
+        res.send({status: false, message: "Oops! User do not exist"})
+    }
+  })
+})
+
+
 //DOCUMENTS FROM THE VARIOUS COLLECTIONS
-//users
+//USERS
 app.get('/users', (req, res) => {
     let users = []
     db.collection('users')
@@ -60,8 +114,124 @@ app.get('/userEmp', (req, res) => {
     res.status(200).json({status: true, data: doc})
     })
 })
+//insert user
+app.post("/users/add", (req, res) => {
+  let {emp_id, password, user_type} = req.body
+  password = bcrypt.hashSync(password, 10)
 
-//employes
+  user = {
+    emp_id: emp_id,
+    password: password,
+    user_type: user_type,
+    status: 0
+  }
+
+  db.collection('users')
+  .insertOne(user)
+  .then((result) => {
+      res.status(200).json({status: true,  message: "User Created Successfully"})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch", message: "Oops! Error occured, user not created"})
+  })
+
+})
+//employees but not users
+app.get('/usersList', (req, res) => {
+ 
+    
+  const agg = [
+    {
+      $lookup: {
+        from: "users",
+        localField: "emp_id",
+        foreignField: "emp_id",
+        as: "user"
+      }
+    },
+    {
+      $match: {
+        $expr: {
+          $not: {
+            $gt: [{ $size: "$user" }, 0]
+          }
+        }
+      }
+    }
+  ];
+  const coll = db.collection('emp_table').aggregate(agg);
+  coll.toArray().then((doc) => {
+    res.status(200).json({status: true, data: doc})
+  })
+})
+//search records
+app.get("/users/:id", (req, res) => {
+  let emp_id = req.params.id;
+  const agg = [
+    {
+      '$match': {
+          '$expr': {
+              '$eq': [
+                  '$emp_id', emp_id
+              ]
+          }
+      }
+  }, {
+    '$lookup': {
+        'from': 'emp_table', 
+        'localField': 'emp_id', 
+        'foreignField': 'emp_id', 
+        'as': 'result'
+    }
+  }
+  ];
+  const coll = db.collection('users').aggregate(agg);
+  coll.toArray().then((doc) => {
+    res.status(200).json({status: true, data: doc})
+  })
+})
+// //update
+app.patch('/users/update/:id', (req, res) => {
+    const {emp_id}  = req.body
+    password = bcrypt.hashSync('password', 10) //encode password
+    const lupdate = {
+      password: password
+    }
+      db.collection('users')
+      .updateOne({emp_id: emp_id}, {$set: lupdate})
+      .then((doc) => {
+          res.status(200).json({status: true, data: doc})
+      }).catch(()=> {
+          res.status(200).json({error: "Could not fetch"})
+      })
+  })
+// //delete
+app.delete('/users/delete/:id', (req, res) => {
+    const emp_id  = req.params.id
+    db.collection('users')
+    .deleteOne({emp_id: emp_id})
+    .then((doc) => {
+        res.status(200).json({status: true, data: doc})
+    }).catch(()=> {
+        res.status(200).json({error: "Could not fetch"})
+    })
+})
+// //reset password 
+app.patch('/users/reset/:id', (req, res) => {
+  const {emp_id}  = req.body
+  const lupdate = req.body
+    db.collection('users')
+    .updateOne({emp_id: emp_id}, {$set: lupdate})
+    .then((doc) => {
+        res.status(200).json({status: true, data: doc})
+    }).catch(()=> {
+        res.status(200).json({error: "Could not fetch"})
+    })
+})
+
+
+
+
+// EMPLOYEES
 app.get('/employees', (req, res) => {
     const agg = [
         {
@@ -79,7 +249,11 @@ app.get('/employees', (req, res) => {
     })
 })
 
-//units
+
+
+
+
+//UNITS
 app.get('/units', (req, res) => {
     const agg = [
         {
@@ -96,8 +270,69 @@ app.get('/units', (req, res) => {
     res.status(200).json({status: true, data: doc})
     })
 })
+//insert unit
+app.post("/units/add", (req, res) => {
+  let unit = req.body
 
-//postings
+  db.collection('units')
+  .insertOne(unit)
+  .then((result) => {
+      res.status(200).json({status: true,  message: "Unit Created Successfully"})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch", message: "Oops! Error occured, unit not created"})
+  })
+
+})
+//search unit
+app.get("/units/:id", (req, res) => {
+  let _id = req.params.id;
+  const agg = [
+    {
+      '$match': {
+          '$expr': {
+              '$eq': [
+                  '$_id', new ObjectId(_id)
+              ]
+          }
+      }
+  }
+  ];
+  const coll = db.collection('units').aggregate(agg);
+  coll.toArray().then((doc) => {
+    res.status(200).json({status: true, data: doc})
+  })
+})
+// //update
+app.patch('/units/update/:id', (req, res) => {
+  const unit  = req.body
+  const unit_id = req.params.id
+    db.collection('units')
+    .updateOne({_id: new ObjectId(unit_id)}, {$set: unit})
+    .then((doc) => {
+        res.status(200).json({status: true, data: doc})
+    }).catch(()=> {
+        res.status(200).json({error: "Could not fetch"})
+    })
+})
+// //delete
+app.delete('/units/delete/:id', (req, res) => {
+  const unit_id = req.params.id
+  db.collection('units')
+  .deleteOne({_id: new ObjectId(unit_id)})
+  .then((doc) => {
+      res.status(200).json({status: true, data: doc})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch"})
+  })
+})
+
+
+
+
+
+
+
+//POSTINGS
 app.get('/postings', (req, res) => {
     const agg = [
         {
@@ -115,7 +350,11 @@ app.get('/postings', (req, res) => {
     })
 })
 
-//promotion
+
+
+
+
+//PROMOTION
 app.get('/promotions', (req, res) => {
     let promotions = []
     db.collection('promotions')
@@ -130,7 +369,11 @@ app.get('/promotions', (req, res) => {
     })
 })
 
-//promotionHistory
+
+
+
+
+//PROMOTION HISTORY
 app.get('/promotionHistory', (req, res) => {
     let promotions = []
     db.collection('promotion_history')
@@ -145,7 +388,11 @@ app.get('/promotionHistory', (req, res) => {
     })
 })
 
-//exits
+
+
+
+
+//EXITS
 app.get('/exits', (req, res) => {
     let exits = []
     db.collection('exits')
@@ -211,37 +458,60 @@ app.get('/count/exits', (req, res) => {
     coll.toArray().then((doc) => {
     res.status(200).json({status: true, data: doc})
     })
-    // let exits = []
-    // db.collection('exits')
-    // .find()
-    // .sort({emp_id: 1})
-    // .forEach(exit => exits.push(exit))
-    // .then(() => {
-    //     res.status(200).json({status: true, data: exits.length})
-    // }).catch(()=> {
-    //     res.status(200).json({error: "Could not fetch"})
-    // })
+})
+//Bar Chart
+app.get("/chartVal", (req, res) => {
+  const agg = [
+    {
+      $lookup: {
+        from: "emp_table",
+        localField: "_id",
+        foreignField: "unit_id",
+        as: "employees"
+      }
+    }, {
+      '$match': {
+          'employees': {
+              '$ne': []
+          }
+      }
+  }
+    ];
+  const coll = db.collection('units').aggregate(agg);
+  coll.toArray().then((doc) => {
+    res.status(200).json({status: true, data: doc})
+  })
 })
 
 //trial
-app.get('/trial', (req, res) => {
-    // db.collection('units')
-    // .find({Name: 'Internal Audit'})
-    // .then(() => {
-    //     res.status(200).json({status: true, data: exits})
-    // }).catch(()=> {
-    //     res.status(200).json({error: "Could not fetch"})
-    // })
-    const agg = [
-        {
-          '$count': 'count'
-        }
-      ];
-    const coll = db.collection('users').aggregate(agg);
-    coll.toArray().then((doc) => {
-    res.status(200).json({status: true, data: doc})
-    })
-})
+// app.get('/trial', (req, res) => {
+ 
+    
+//     const agg = [
+//       {
+//     $lookup: {
+//       from: "users",
+//       localField: "emp_id",
+//       foreignField: "emp_id",
+//       as: "user"
+//     }
+//   },
+//   {
+//     $match: {
+//       $expr: {
+//         $not: {
+//           $gt: [{ $size: "$user" }, 0]
+//         }
+//       }
+//     }
+//   }
+
+//       ];
+//     const coll = db.collection('emp_table').aggregate(agg);
+//     coll.toArray().then((doc) => {
+//       res.status(200).json({status: true, data: doc})
+//     })
+// })
 // if (ObjectId.isValid(req.params.id))
 // app.get('/trial/:id', (req, res) => {
 //   if (ObjectId.isValid(req.params.id)){

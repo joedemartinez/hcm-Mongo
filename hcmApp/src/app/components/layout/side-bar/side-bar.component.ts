@@ -34,6 +34,10 @@ export class SideBarComponent {
     //Exits
     this.http.get("http://localhost:8089/count/exits").subscribe((results: any) => {
       this.exits =  results.data[0]?.count
+      //if there's no document
+      if (!this.exits) {
+        this.exits =  0
+      }
     })
     //units
     this.http.get("http://localhost:8089/count/units").subscribe((results: any) => {

@@ -29,7 +29,7 @@ export class ManagePostingsComponent {
 
   getPostingDetails(){
     //posting
-    this.http.get("http://localhost:8080/api/postings").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/postings").subscribe((results: any) => {
       this.postingDetails =  results.data
       
       setTimeout(()=>{

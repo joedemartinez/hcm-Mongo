@@ -36,7 +36,7 @@ export class ManageUsersComponent {
 
   getUsersDetails(){
     //users
-    this.http.get("http://localhost:8089/users").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/userEmp").subscribe((results: any) => {
       this.usersDetails =  results.data
       setTimeout(()=>{
         $('#usersDataTable').DataTable( {
@@ -49,7 +49,7 @@ export class ManageUsersComponent {
           lengthMenu : [5, 10, 25, 50],
           destroy: true
         } );
-      }, 2);
+      }, 2); 
     })
   }
 
@@ -82,7 +82,7 @@ export class ManageUsersComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.delete("http://localhost:8080/api/users/delete/"+id).subscribe((results: any) => {
+      this.http.delete("http://localhost:8089/users/delete/"+id).subscribe((results: any) => {
 
         if(results.status){
           this.toastr.success('User Deleted Successfully', 'Success!');
@@ -110,7 +110,7 @@ export class ManageUsersComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.put("http://localhost:8080/api/users/reset/"+id, id).subscribe((results: any) => {
+      this.http.patch("http://localhost:8089/users/reset/"+id, id).subscribe((results: any) => {
 
         if(results.status){
           this.toastr.success('User Password Reset Successfully', 'Success!');

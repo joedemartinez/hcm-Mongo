@@ -29,13 +29,13 @@
                                 <tbody>
                                     <tr *ngFor="let unit of unitsDetails; let i = index">
                                         <td>
-                                            <button class="btn btn-sm" title="Edit" style="color: rgb(240, 221, 15)" (click)="editUnit()" routerLink="/manageUnits" [queryParams]="{id: unit.unit_id}"> <i class="fa fa-edit"></i></button>
-                                            <button class="btn btn-sm" title="Delete" style="color: red" (click)="deleteUnit(unit.unit_id)" routerLink="/manageUnits" [queryParams]="{id: unit.unit_id}"> <i class="fa fa-trash"></i></button>
+                                            <button class="btn btn-sm" title="Edit" style="color: rgb(240, 221, 15)" (click)="editUnit()" routerLink="/manageUnits" [queryParams]="{id: unit._id}"> <i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-sm" title="Delete" style="color: red" (click)="deleteUnit(unit._id)" routerLink="/manageUnits" [queryParams]="{id: unit._id}"> <i class="fa fa-trash"></i></button>
 
                                         </td>
                                         <td>{{i + 1 }}</td>
                                         <td>{{unit.Name}}</td>
-                                        <td>{{unit.unitNumber}}</td>
+                                        <td>{{unit.result.length}}</td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -40,15 +40,15 @@ export class AddUserComponent {
   submitForm(){
 
     //make http post request
-    this.http.post("http://localhost:8080/api/users/add", this.addUser.value).subscribe((results: any) => {
+    this.http.post("http://localhost:8089/users/add", this.addUser.value).subscribe((results: any) => {
 
       if(results.status){
-        this.toastr.success('User Added Successfully', 'Success!');
+        this.toastr.success(results.message, 'Success!');
           this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
               this.router.navigate(['/users'])
           );
       }else{
-        this.toastr.warning('Oops!! Error Occured', 'Error!');
+        this.toastr.warning(results.message, 'Error!');
           this.router.navigateByUrl('/users', {skipLocationChange: true}).then(() =>
               this.router.navigate(['/users'])
           );
@@ -60,7 +60,7 @@ export class AddUserComponent {
   }
 
   getEmpList(){
-    this.http.get("http://localhost:8080/api/usersList").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/usersList").subscribe((results: any) => {
       this.empList =  results.data
     })
   }

@@ -10,7 +10,7 @@
                 <select class="form-control" formControlName="emp_id" required
                     [ngClass]="{'is-invalid' : addUser.controls['emp_id'].invalid && addUser.controls['emp_id'].touched }">
                         <option value="" selected disabled>Select Option</option>
-                        <option *ngFor="let emp of empList;" value="{{emp.emp_id}}">{{emp.name}}</option>
+                        <option *ngFor="let emp of empList;" value="{{emp.emp_id}}">{{emp.emp_firstname+ ' '+emp.emp_middlename+' '+emp.emp_surname}}</option>
                     </select>
             </div>
             <div class="form-group col-md-12">

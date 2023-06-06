@@ -77,7 +77,7 @@ export class UsersComponent {
   }
 
   //edit mode
-  editMode(){
+  editMode(){ 
     this.router.navigate(['/manageUsers'])
   }
 }

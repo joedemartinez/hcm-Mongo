@@ -32,7 +32,7 @@ export class ManageUnitsComponent {
 
   getUnitDetails(){
     //unit
-    this.http.get("http://localhost:8080/api/units").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/units").subscribe((results: any) => { 
       this.unitsDetails =  results.data
       setTimeout(()=>{
         $('#unitsDataTable').DataTable( {
@@ -71,7 +71,7 @@ export class ManageUnitsComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.delete("http://localhost:8080/api/units/delete/"+id).subscribe((results: any) => {
+      this.http.delete("http://localhost:8089/units/delete/"+id).subscribe((results: any) => {
 
         if(results.status){
           this.toastr.success('Unit Deleted Successfully', 'Success!');

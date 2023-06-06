@@ -34,7 +34,7 @@ export class UnitsComponent {
 
   getUnitDetails(){
     //unit
-    this.http.get("http://localhost:8089/units").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/units").subscribe((results: any) => { 
       this.unitsDetails =  results.data
       // console.log(this.unitsDetails.result)
       setTimeout(()=>{
