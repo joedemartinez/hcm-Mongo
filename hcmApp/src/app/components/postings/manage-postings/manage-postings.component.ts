@@ -75,10 +75,10 @@ export class ManagePostingsComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.delete("http://localhost:8080/api/postings/delete/"+id).subscribe((results: any) => {
+      this.http.delete("http://localhost:8089/postings/delete/"+id).subscribe((results: any) => {
 
         if(results.status){
-          this.toastr.success('Unit Deleted Successfully', 'Success!');
+          this.toastr.success('Posting Deleted Successfully', 'Success!');
             this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
                 this.router.navigate(['/managePostings'])
             );

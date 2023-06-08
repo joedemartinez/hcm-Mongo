@@ -56,7 +56,7 @@ export class DashboardComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.http.get("http://localhost:8089/chartVal").subscribe((results: any) => {
       this.chartData = results.data
-      console.log(this.chartData)
+      // console.log(this.chartData)
 
       for (let i = 0; i < this.chartData.length; i++) {
         this.chartUnit.push(this.chartData[i].Name)

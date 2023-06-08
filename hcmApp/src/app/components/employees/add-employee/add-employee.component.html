@@ -107,7 +107,7 @@
                 <select class="form-control" formControlName="unit_id" required
                     [ngClass]="{'is-invalid' : addEmp.controls['unit_id'].invalid && addEmp.controls['unit_id'].touched }">
                     <option value="" selected disabled>Select Option</option>
-                    <option *ngFor="let unit of unitList;" value="{{unit.unit_id}}">{{unit.Name}}</option>
+                    <option *ngFor="let unit of unitList;" value="{{unit._id}}">{{unit.Name}}</option>
                 </select>
             </div>
             <div class="form-group col-md-3">

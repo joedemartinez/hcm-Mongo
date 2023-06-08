@@ -35,7 +35,7 @@ export class ManageEmployeesComponent {
     //Emp
     this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empDetails =  results.data
-      
+      // console.log(this.empDetails.emp_id)
       setTimeout(()=>{
         $('#empDataTable').DataTable( {
           pagingType: 'simple_numbers',
@@ -79,10 +79,10 @@ export class ManageEmployeesComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.delete("http://localhost:8080/api/employees/delete/"+id).subscribe((results: any) => {
+      this.http.delete("http://localhost:8089/employees/delete/"+id).subscribe((results: any) => {
 
         if(results.status){
-          this.toastr.success('Unit Deleted Successfully', 'Success!');
+          this.toastr.success('Employee Deleted Successfully', 'Success!');
             this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
                 this.router.navigate(['/manageEmployees'])
             );

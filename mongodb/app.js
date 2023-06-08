@@ -4,6 +4,19 @@ const bodyParser = require('body-parser');
 const cors = require('cors') //CORS policy: No 'Access-Control-Allow-Origin' h 
 const bcrypt = require('bcryptjs');
 const {ObjectId} = require('mongodb')
+//file upload
+const multer  = require('multer')
+// Configure the storage destination for uploaded files
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../hcmApp/src/assets/img'); // Specify the destination folder
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 
 //INIT APP
@@ -11,6 +24,11 @@ const app = express()
 app.use(bodyParser.json()) 
 app.use(cors()) //CORS policy: No 'Access-Control-Allow-Origin' 
 app.use(express.json())
+
+// Handle the file upload request
+app.post('/upload', upload.single('file'), (req, res) => {
+  res.send('File uploaded successfully.');
+});
 
 //DB CONN
 let db
@@ -79,6 +97,23 @@ app.post("/login", (req, res) => {
         res.send({status: false, message: "Oops! User do not exist"})
     }
   })
+})
+
+// //change password 
+app.patch('/password/update/:id', (req, res) => {
+  const {newPassword, confirmPassword}  = req.body
+  const emp_id = req.params.id
+  password = bcrypt.hashSync(newPassword, 10) //encode password
+  const lupdate = {
+    password: password
+  }
+    db.collection('users')
+    .updateOne({emp_id: emp_id}, {$set: lupdate})
+    .then((doc) => {
+        res.status(200).json({status: true, data: doc})
+    }).catch(()=> {
+        res.status(200).json({error: "Could not fetch"})
+    })
 })
 
 
@@ -189,8 +224,8 @@ app.get("/users/:id", (req, res) => {
     res.status(200).json({status: true, data: doc})
   })
 })
-// //update
-app.patch('/users/update/:id', (req, res) => {
+// //reset password 
+app.patch('/users/reset/:id', (req, res) => {
     const {emp_id}  = req.body
     password = bcrypt.hashSync('password', 10) //encode password
     const lupdate = {
@@ -215,8 +250,8 @@ app.delete('/users/delete/:id', (req, res) => {
         res.status(200).json({error: "Could not fetch"})
     })
 })
-// //reset password 
-app.patch('/users/reset/:id', (req, res) => {
+// //update
+app.patch('/users/update/:id', (req, res) => {
   const {emp_id}  = req.body
   const lupdate = req.body
     db.collection('users')
@@ -248,8 +283,61 @@ app.get('/employees', (req, res) => {
     res.status(200).json({status: true, data: doc})
     })
 })
+//insert employee
+app.post("/employees/add", (req, res) => {
+  let employee = req.body
 
+  db.collection('emp_table')
+  .insertOne(employee)
+  .then((result) => {
+      res.status(200).json({status: true,  message: "Employee Created Successfully"})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch", message: "Oops! Error occured, employee not created"})
+  })
 
+})
+//search records
+app.get("/employees/:id", (req, res) => {
+  let emp_id = req.params.id;
+  const agg = [
+    {
+      '$match': {
+          '$expr': {
+              '$eq': [
+                  '$_id', new ObjectId(emp_id)
+              ]
+          }
+      }
+  }
+  ];
+  const coll = db.collection('emp_table').aggregate(agg);
+  coll.toArray().then((doc) => {
+    res.status(200).json({status: true, data: doc})
+  })
+})
+// //update
+app.patch('/employees/update/:id', (req, res) => {
+  const emp_id  = req.params.id
+  const lupdate = req.body
+    db.collection('emp_table')
+    .updateOne({_id: new ObjectId(emp_id)}, {$set: lupdate})
+    .then((doc) => {
+        res.status(200).json({status: true, data: doc})
+    }).catch(()=> {
+        res.status(200).json({error: "Could not fetch"})
+    })
+})
+// //delete
+app.delete('/employees/delete/:id', (req, res) => {
+  const emp_id  = req.params.id
+  db.collection('emp_table')
+  .deleteOne({_id: new ObjectId(emp_id)})
+  .then((doc) => {
+      res.status(200).json({status: true, data: doc})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch"})
+  })
+})
 
 
 
@@ -349,7 +437,68 @@ app.get('/postings', (req, res) => {
     res.status(200).json({status: true, data: doc})
     })
 })
+//insert unit
+app.post("/postings/add", (req, res) => {
+  let posting = req.body
 
+  db.collection('postings_table')
+  .insertOne(posting)
+  .then((result) => {
+      res.status(200).json({status: true,  message: "Posting Created Successfully"})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch", message: "Oops! Error occured, posting not created"})
+  })
+
+})
+//search records
+app.get("/postings/:id", (req, res) => {
+  let emp_id = req.params.id;
+  const agg = [
+    {
+      '$match': {
+          '$expr': {
+              '$eq': [
+                  '$emp_id', emp_id
+              ]
+          }
+      }
+  }, {
+    '$lookup': {
+        'from': 'emp_table', 
+        'localField': 'emp_id', 
+        'foreignField': 'emp_id', 
+        'as': 'result'
+    }
+  }
+  ];
+  const coll = db.collection('postings_table').aggregate(agg);
+  coll.toArray().then((doc) => {
+    res.status(200).json({status: true, data: doc})
+  })
+})
+// //update
+app.patch('/postings/update/:id', (req, res) => {
+  const posting  = req.body
+  const posting_id = req.params.id
+    db.collection('postings_table')
+    .updateOne({emp_id: posting_id}, {$set: posting})
+    .then((doc) => {
+        res.status(200).json({status: true, data: doc})
+    }).catch(()=> {
+        res.status(200).json({error: "Could not fetch"})
+    })
+})
+// //delete
+app.delete('/postings/delete/:id', (req, res) => {
+  const posting_id = req.params.id
+  db.collection('postings_table')
+  .deleteOne({_id: new ObjectId(posting_id)})
+  .then((doc) => {
+      res.status(200).json({status: true, data: doc})
+  }).catch(()=> {
+      res.status(200).json({error: "Could not fetch"})
+  })
+})
 
 
 
@@ -366,14 +515,14 @@ app.get('/promotions', (req, res) => {
         // res.send({status: true, data: results})
     }).catch(()=> {
         res.status(200).json({error: "Could not fetch"})
-    })
+    }) 
 })
 
 
 
 
 
-//PROMOTION HISTORY
+//PROMOTION HISTORY 
 app.get('/promotionHistory', (req, res) => {
     let promotions = []
     db.collection('promotion_history')
@@ -483,82 +632,3 @@ app.get("/chartVal", (req, res) => {
   })
 })
 
-//trial
-// app.get('/trial', (req, res) => {
- 
-    
-//     const agg = [
-//       {
-//     $lookup: {
-//       from: "users",
-//       localField: "emp_id",
-//       foreignField: "emp_id",
-//       as: "user"
-//     }
-//   },
-//   {
-//     $match: {
-//       $expr: {
-//         $not: {
-//           $gt: [{ $size: "$user" }, 0]
-//         }
-//       }
-//     }
-//   }
-
-//       ];
-//     const coll = db.collection('emp_table').aggregate(agg);
-//     coll.toArray().then((doc) => {
-//       res.status(200).json({status: true, data: doc})
-//     })
-// })
-// if (ObjectId.isValid(req.params.id))
-// app.get('/trial/:id', (req, res) => {
-//   if (ObjectId.isValid(req.params.id)){
-//     db.collection('units')
-//     .findOne({Name: 'Internal Audit'})
-//     .then((doc) => {
-//         res.status(200).json({status: true, data: doc})
-//     }).catch(()=> {
-//         res.status(200).json({error: "Could not fetch"})
-//     }}
-// })
-
-// //post
-// app.post('/trial', (req, res) => {
-//     const exits = req.body
-//     db.collection('units')
-//     .insertOne(exits)
-//     .then((result) => {
-//         res.status(200).json({status: true, data: result})
-//     }).catch(()=> {
-//         res.status(200).json({error: "Could not fetch"})
-//     })
-// })
-
-// //delete
-// app.delete('/trial:id', (req, res) => {
-//   if (ObjectId.isValid(req.params.id)){
-//     db.collection('units')
-//     .deleteOne({Name: 'Internal Audit'})
-//     .then((doc) => {
-//         res.status(200).json({status: true, data: doc})
-//     }).catch(()=> {
-//         res.status(200).json({error: "Could not fetch"})
-//     })
-// }
-// })
-
-// //update
-// app.patch('/trial:id', (req, res) => {
-//     const lupdate = req.body
-//     if (ObjectId.isValid(req.params.id)){
-//       db.collection('units')
-//       .updateOne({Name: 'Internal Audit'}, {$set: lupdate})
-//       .then((doc) => {
-//           res.status(200).json({status: true, data: doc})
-//       }).catch(()=> {
-//           res.status(200).json({error: "Could not fetch"})
-//       })
-//   }
-//   })

@@ -37,7 +37,7 @@ export class EmployeesComponent {
     //Emp
     this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empDetails =  results.data
-      
+      // console.log(this.empDetails)
       setTimeout(()=>{
         $('#empDataTable').DataTable( {
           pagingType: 'simple_numbers',

@@ -61,7 +61,7 @@ export class ChangePasswordComponent {
     this.id = localStorage.getItem('emp_id')
 
     //make http post request
-    this.http.put("http://localhost:8080/api/password/update/"+this.id, this.changePasswordForm.value).subscribe((results: any) => {
+    this.http.patch("http://localhost:8089/password/update/"+this.id, this.changePasswordForm.value).subscribe((results: any) => {
 
       if(results.status){
         this.toastr.success('Password Change Successful. \n Please Log In Again', 'Success!');

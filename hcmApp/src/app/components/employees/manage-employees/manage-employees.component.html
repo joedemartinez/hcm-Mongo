@@ -39,8 +39,8 @@
                                 <tbody>
                                     <tr *ngFor="let emp of empDetails; let i = index">
                                         <td>
-                                            <button *ngIf="ifMe !== emp.emp_id" class="btn btn-sm" title="Edit" style="color: rgb(240, 221, 15)" (click)="editEmployee()" routerLink="/manageEmployees" [queryParams]="{id: emp.emp_id}"> <i class="fa fa-edit"></i></button>
-                                            <button *ngIf="ifMe !== emp.emp_id" class="btn btn-sm" title="Delete" style="color: red" (click)="deleteEmployee(emp.emp_id)" routerLink="/manageEmployees" [queryParams]="{id: emp.emp_id}"> <i class="fa fa-trash"></i></button>
+                                            <button *ngIf="ifMe !== emp.emp_id" class="btn btn-sm" title="Edit" style="color: rgb(240, 221, 15)" (click)="editEmployee()" routerLink="/manageEmployees" [queryParams]="{id: emp._id}"> <i class="fa fa-edit"></i></button>
+                                            <button *ngIf="ifMe !== emp.emp_id" class="btn btn-sm" title="Delete" style="color: red" (click)="deleteEmployee(emp._id)" routerLink="/manageEmployees" [queryParams]="{id: emp._id}"> <i class="fa fa-trash"></i></button>
                                         </td>
                                         <td>{{i +1 }}</td>
                                         <td>
@@ -48,7 +48,7 @@
                                             <img *ngIf="emp.photo == ''" src='assets/img/dummy.png' height="90px">
                                         </td>
                                         <td>{{emp.emp_id}}</td>
-                                        <td>{{emp.name}}</td>
+                                        <td>{{emp.emp_firstname+' '+emp.emp_middlename+' '+emp.emp_surname}}</td>
                                         <td>{{emp.emp_gender}}</td>
                                         <td>{{conDate(emp.emp_dob)}}</td>
                                         <td>{{emp.emp_maritalstatus}}</td>
@@ -57,7 +57,7 @@
                                         <td>{{emp.emp_highestqualification}}</td>
                                         <td>{{emp.emp_staffstatus}}</td>
                                         <td>{{emp.emp_yearswithministry}}</td>
-                                        <td>{{emp.Unit}}</td>
+                                        <td>{{emp.result.length > 0 ? emp.result[0].Name : ''}}</td>
                                     </tr>
                                 </tbody>
                             </table>

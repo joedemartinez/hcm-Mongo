@@ -29,8 +29,8 @@ export class PromotionsComponent {
 
   getPromotionDetails(){
     //promotions
-    this.http.get("http://localhost:8080/api/promotions").subscribe((results: any) => {
-      this.promotionDetails =  results.data
+    this.http.get("http://localhost:8089/promotions").subscribe((results: any) => {
+      this.promotionHistory =  results.data
       // console.log(this.promotionDetails)
       setTimeout(()=>{
         $('#promotionsDataTable').DataTable( {
@@ -49,8 +49,8 @@ export class PromotionsComponent {
 
   getPromotionHistory(){
     //promotions history
-    this.http.get("http://localhost:8080/api/promtionsHistory").subscribe((results: any) => {
-      this.promotionHistory =  results.data
+    this.http.get("http://localhost:8089/promotionHistory").subscribe((results: any) => {
+      this.promotionDetails =  results.data
       // console.log(this.promotionHistory)
     })
   }

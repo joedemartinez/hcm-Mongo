@@ -44,7 +44,7 @@ export class AddPromotionComponent {
   submitForm(){
 
     //make http post request
-    this.http.post("http://localhost:8080/api/promotions/add", this.addPromotion.value).subscribe((results: any) => {
+    this.http.post("http://localhost:8089/promotions/add", this.addPromotion.value).subscribe((results: any) => {
 
       if(results.status){
         this.toastr.success('Promotion Added Successfully', 'Success!');
@@ -62,7 +62,7 @@ export class AddPromotionComponent {
   }
 
   getEmpList(){
-    this.http.get("http://localhost:8080/api/employees").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empList =  results.data
       // console.log(this.empList)
     })

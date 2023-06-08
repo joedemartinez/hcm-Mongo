@@ -44,7 +44,7 @@
                                             <img *ngIf="emp.photo == ''" src='assets/img/dummy.png' height="90px">
                                         </td>
                                         <td>{{emp.emp_id}}</td>
-                                        <td>{{emp.name}}</td>
+                                        <td>{{emp.emp_firstname+' '+emp.emp_middlename+' '+emp.emp_surname}}</td>
                                         <td>{{emp.emp_gender}}</td>
                                         <td>{{conDate(emp.emp_dob)}}</td>
                                         <td>{{emp.emp_maritalstatus}}</td>
@@ -53,7 +53,7 @@
                                         <td>{{emp.emp_highestqualification}}</td>
                                         <td>{{emp.emp_staffstatus}}</td>
                                         <td>{{emp.emp_yearswithministry}}</td>
-                                        <td>{{emp.result[0].Name}}</td>
+                                        <td>{{emp.result.length > 0 ? emp.result[0].Name : ''}}</td>
                                     </tr>
                                 </tbody>
                             </table>

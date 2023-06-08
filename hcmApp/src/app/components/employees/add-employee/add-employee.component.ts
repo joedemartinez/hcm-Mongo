@@ -20,6 +20,7 @@ export class AddEmployeeComponent {
   id: any
   date: any
   empDetails: any
+  fileToUpload!:File
 
 
 
@@ -63,7 +64,7 @@ export class AddEmployeeComponent {
     
 
     if (this.id) {
-      this.http.get("http://localhost:8080/api/employees/"+this.id).subscribe((results: any) => {
+      this.http.get("http://localhost:8089/employees/"+this.id).subscribe((results: any) => {
         // console.log(results.data)
         this.empDetails = results.data
 
@@ -103,9 +104,11 @@ export class AddEmployeeComponent {
     //set values
     this.addEmp.value.photo = this.imageName
 
+    // console.log(this.addEmp.value)
+
     if(this.id > ''){ //updating
       //make http post request
-      this.http.put("http://localhost:8080/api/employees/update/"+this.id, this.addEmp.value).subscribe((results: any) => {
+      this.http.patch("http://localhost:8089/employees/update/"+this.id, this.addEmp.value).subscribe((results: any) => {
         // console.log(results.status)
         if(results.status){
           this.toastr.success('Employee Updated Successfully', 'Success!');
@@ -122,7 +125,7 @@ export class AddEmployeeComponent {
       })
     }else{
         // make http post request
-      this.http.post("http://localhost:8080/api/employees/add", this.addEmp.value).subscribe((results: any) => {
+      this.http.post("http://localhost:8089/employees/add", this.addEmp.value).subscribe((results: any) => {
         // console.log(results.status)
         if(results.status){
           this.toastr.success('Employee Added Successfully', 'Success!');
@@ -140,19 +143,45 @@ export class AddEmployeeComponent {
       })
     }
 
+    //upload file
+    this.uploadFile()
+
     this.modal.dismissAll();
     
   }
 
+
+
   getUnitList(){
-    this.http.get("http://localhost:8080/api/units").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/units").subscribe((results: any) => {
       this.unitList =  results.data
       // console.log(this.unitList)
     })
   }
 
+  //uploading file
+  uploadFile() {
+    // Perform file upload logic here
+    const formData: FormData = new FormData();
+      formData.append('file', this.fileToUpload);
+
+      // Replace 'uploads' with your desired folder path within the assets directory
+      const uploadUrl = 'http://localhost:8089/upload';
+
+      this.http.post(uploadUrl, formData)
+        .subscribe(
+          response => {
+            console.log('File uploaded successfully.');
+          },
+          error => {
+            console.log('Error uploading file:', error);
+          }
+        );
+  }
+
   onFileSelected(event:any) {
     this.imageName = event.target.files[0].name;
+    this.fileToUpload = event.target.files[0]
 
     if(event.target.files[0]){
       let reader = new FileReader()

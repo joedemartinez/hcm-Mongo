@@ -36,7 +36,7 @@ export class EditUserComponent {
     })
 
   //  if (this.id) {
-  //   this.http.get("http://localhost:8080/api/users/"+this.id).subscribe((results: any) => {
+  //   this.http.get("http://localhost:8089/users/"+this.id).subscribe((results: any) => {
   //      this.empList = results.data//setting result to modalData variable
   //      console.log(this.empList)
   //      //set validations

@@ -55,7 +55,7 @@ export class AddPostingComponent {
     // console.log(this.id)
 
     if (this.id) {
-    this.http.get("http://localhost:8080/api/postings/"+this.id).subscribe((results: any) => {
+    this.http.get("http://localhost:8089/postings/"+this.id).subscribe((results: any) => {
         this.postingDetails = results.data//setting result to modalData variable
         // console.log(this.postingDetails)
         //set validations
@@ -79,7 +79,7 @@ export class AddPostingComponent {
 
     if(this.id > ''){ //updating posting
        //make http post request
-      this.http.put("http://localhost:8080/api/postings/update/"+this.id, this.addPosting.value).subscribe((results: any) => {
+      this.http.patch("http://localhost:8089/postings/update/"+this.id, this.addPosting.value).subscribe((results: any) => {
         // console.log(results.status)
         if(results.status){
           this.toastr.success('Posting Updated Successfully', 'Success!');
@@ -96,7 +96,7 @@ export class AddPostingComponent {
       })
     }else{//new posting
       //make http post request
-      this.http.post("http://localhost:8080/api/postings/add", this.addPosting.value).subscribe((results: any) => {
+      this.http.post("http://localhost:8089/postings/add", this.addPosting.value).subscribe((results: any) => {
         
         if(results.status){
           this.toastr.success('Posting Added Successfully', 'Success!');
@@ -117,9 +117,9 @@ export class AddPostingComponent {
   }
 
   getEmpList(){
-    this.http.get("http://localhost:8080/api/employees").subscribe((results: any) => {
+    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empList =  results.data
-      // console.log(this.empList)
+      console.log(this.empList)
     })
   }
 
