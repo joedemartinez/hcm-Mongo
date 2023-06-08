@@ -5,7 +5,12 @@ const cors = require('cors') //CORS policy: No 'Access-Control-Allow-Origin' h
 const bcrypt = require('bcryptjs');
 const {ObjectId} = require('mongodb')
 
-//file upload
+//JSON WEB TOKEN
+const jwt = require('jsonwebtoken');
+const expiresIn = '5m'; // Set the expiration time (e.g., 1 hour)
+
+
+//FILE UPLOAD
 const multer  = require('multer')
 // Configure the storage destination for uploaded files
 const storage = multer.diskStorage({
@@ -90,7 +95,8 @@ app.post("/login", (req, res) => {
       result = doc[0].password
       const verified = bcrypt.compareSync(password, result);
       if (verified) {
-          res.send({status: true, data: doc})
+          const token = jwt.sign({ userId: doc.emp_id }, 'secretKey', { expiresIn });
+          res.send({status: true, data: doc, jwt: token})
       } else {
           res.send({status: false, message: "Oops! Error occured, Wrong Staff ID or Password"})
       }   
