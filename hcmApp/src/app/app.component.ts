@@ -18,14 +18,14 @@ export class AppComponent {
 
   // initiate it in your component OnInit
   ngOnInit(): void {
-    this.bnIdle.startWatching(60).subscribe((isTimedOut: boolean) => {
+    this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
       if (isTimedOut) {
         // console.log('session expired');
          
          const proceed = confirm('Your session is about to expire due to inactivity. To continue using the application, please click the "Cancel" button below.');
 
          if (!proceed) {
-          this.bnIdle.resetTimer(60);
+          this.bnIdle.resetTimer(300);
          } else {
           this.logout.logout()
           this.bnIdle.stopTimer();

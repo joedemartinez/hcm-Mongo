@@ -7,7 +7,7 @@ const {ObjectId} = require('mongodb')
 
 // //JSON WEB TOKEN
 const jwt = require('jsonwebtoken');
-const expiresIn = '1s'; // Set the expiration time (e.g., 1 hour)
+const expiresIn = '1h'; // Set the expiration time (e.g., 1 hour)
 
 
 //FILE UPLOAD
