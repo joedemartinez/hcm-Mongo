@@ -33,6 +33,7 @@ import { ManageEmployeesComponent } from './components/employees/manage-employee
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { BnNgIdleService } from 'bn-ng-idle'; //idle timeout
 
 @NgModule({
   declarations: [
@@ -70,10 +71,10 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
     DataTablesModule,
     NgbModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
     
   ],
-  providers: [],
+  providers: [BnNgIdleService],//idle timeout
   bootstrap: [AppComponent]
 })
 export class AppModule { }

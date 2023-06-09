@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { BnNgIdleService } from 'bn-ng-idle'; //bn ng idle
+import { LogoutService } from './services/logout.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,27 @@ export class AppComponent {
   title = 'HCM APP';
   log:any
 
+  constructor(private bnIdle: BnNgIdleService,private logout: LogoutService) {
+    
+  }
+
+  // initiate it in your component OnInit
+  ngOnInit(): void {
+    this.bnIdle.startWatching(60).subscribe((isTimedOut: boolean) => {
+      if (isTimedOut) {
+        // console.log('session expired');
+         
+         const proceed = confirm('Your session is about to expire due to inactivity. To continue using the application, please click the "Cancel" button below.');
+
+         if (!proceed) {
+          this.bnIdle.resetTimer(60);
+         } else {
+          this.logout.logout()
+          this.bnIdle.stopTimer();
+         }
+      }
+    });
+  }
 
   ngAfterViewInit(){
     setInterval(()=>{

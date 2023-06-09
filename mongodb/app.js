@@ -5,9 +5,9 @@ const cors = require('cors') //CORS policy: No 'Access-Control-Allow-Origin' h
 const bcrypt = require('bcryptjs');
 const {ObjectId} = require('mongodb')
 
-//JSON WEB TOKEN
+// //JSON WEB TOKEN
 const jwt = require('jsonwebtoken');
-const expiresIn = '5m'; // Set the expiration time (e.g., 1 hour)
+const expiresIn = '1s'; // Set the expiration time (e.g., 1 hour)
 
 
 //FILE UPLOAD
@@ -95,8 +95,9 @@ app.post("/login", (req, res) => {
       result = doc[0].password
       const verified = bcrypt.compareSync(password, result);
       if (verified) {
-          const token = jwt.sign({ userId: doc.emp_id }, 'secretKey', { expiresIn });
-          res.send({status: true, data: doc, jwt: token})
+          const token = jwt.sign({ user: doc[0].emp_id, user_type: doc[0].user_type, photo: doc[0].employee[0].photo, name: doc[0].employee[0].name  }, 'secretKey', { expiresIn });
+          // const token = jwt.sign({ userId: doc.emp_id }, 'secretKey');
+          res.send({status: true, data: doc, token: token})
       } else {
           res.send({status: false, message: "Oops! Error occured, Wrong Staff ID or Password"})
       }   

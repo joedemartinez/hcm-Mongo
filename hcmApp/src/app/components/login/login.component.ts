@@ -34,8 +34,8 @@ export class LoginComponent {
 
     //make http post request
     this.http.post("http://localhost:8089/login", this.loginFb.value).subscribe((results: any) => {
-    // console.log(results.data)
-    // console.log(results.jwt)
+    console.log(results.data)
+    console.log(results.token)
 
       if(results.status === true){
         // set local storage vals
@@ -44,7 +44,7 @@ export class LoginComponent {
         localStorage.setItem('name', results.data[0].employee[0].name)
         localStorage.setItem('user_type', results.data[0].user_type)
         localStorage.setItem('photo', results.data[0].employee[0].photo)
-        localStorage.setItem('jwt', results.jwt)
+        localStorage.setItem('jwt', results.token)
 
         this.toastr.success('Login Successful', 'Success!');
           this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
