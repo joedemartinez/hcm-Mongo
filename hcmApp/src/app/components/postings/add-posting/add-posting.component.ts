@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { HttpService } from 'src/app/services/http.service';
 
 @Component({
   selector: 'app-add-posting',
@@ -21,7 +22,7 @@ export class AddPostingComponent {
   constructor (private fb: FormBuilder, 
     private modal: NgbModal,
     private router: Router, 
-    private http: HttpClient,
+    private httpService: HttpService,
     private toastr: ToastrService,
     private route: ActivatedRoute) {
   
@@ -55,7 +56,7 @@ export class AddPostingComponent {
     // console.log(this.id)
 
     if (this.id) {
-    this.http.get("http://localhost:8089/postings/"+this.id).subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/postings/"+this.id).subscribe((results: any) => {
         this.postingDetails = results.data//setting result to modalData variable
         // console.log(this.postingDetails)
         //set validations
@@ -79,7 +80,7 @@ export class AddPostingComponent {
 
     if(this.id > ''){ //updating posting
        //make http post request
-      this.http.patch("http://localhost:8089/postings/update/"+this.id, this.addPosting.value).subscribe((results: any) => {
+      this.httpService.patch("http://localhost:8089/postings/update/"+this.id, this.addPosting.value).subscribe((results: any) => {
         // console.log(results.status)
         if(results.status){
           this.toastr.success('Posting Updated Successfully', 'Success!');
@@ -96,7 +97,7 @@ export class AddPostingComponent {
       })
     }else{//new posting
       //make http post request
-      this.http.post("http://localhost:8089/postings/add", this.addPosting.value).subscribe((results: any) => {
+      this.httpService.post("http://localhost:8089/postings/add", this.addPosting.value).subscribe((results: any) => {
         
         if(results.status){
           this.toastr.success('Posting Added Successfully', 'Success!');
@@ -117,7 +118,7 @@ export class AddPostingComponent {
   }
 
   getEmpList(){
-    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empList =  results.data
       console.log(this.empList)
     })

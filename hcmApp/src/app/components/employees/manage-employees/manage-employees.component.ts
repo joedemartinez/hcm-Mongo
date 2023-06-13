@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpService } from 'src/app/services/http.service';
 import { AddEmployeeComponent } from '../add-employee/add-employee.component';
 
 @Component({
@@ -18,7 +19,7 @@ export class ManageEmployeesComponent {
   ifMe:any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal,
     private router: Router,
     private route: ActivatedRoute) {
@@ -33,7 +34,7 @@ export class ManageEmployeesComponent {
 
   getEmpDetails(){
     //Emp
-    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empDetails =  results.data
       // console.log(this.empDetails.emp_id)
       setTimeout(()=>{
@@ -79,7 +80,7 @@ export class ManageEmployeesComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.delete("http://localhost:8089/employees/delete/"+id).subscribe((results: any) => {
+      this.httpService.delete("http://localhost:8089/employees/delete/"+id).subscribe((results: any) => {
 
         if(results.status){
           this.toastr.success('Employee Deleted Successfully', 'Success!');

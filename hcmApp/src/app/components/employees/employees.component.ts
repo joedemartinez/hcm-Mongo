@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpService } from 'src/app/services/http.service';
 
  
 @Component({
@@ -19,7 +20,7 @@ export class EmployeesComponent {
   priv: any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal,
     private router: Router,
     private route: ActivatedRoute) {
@@ -35,7 +36,7 @@ export class EmployeesComponent {
 
   getEmpDetails(){
     //Emp
-    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empDetails =  results.data
       // console.log(this.empDetails)
       setTimeout(()=>{

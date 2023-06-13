@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { HttpService } from 'src/app/services/http.service';
 
 @Component({
   selector: 'app-add-employee',
@@ -27,7 +28,7 @@ export class AddEmployeeComponent {
   constructor (private fb: FormBuilder, 
     private modal: NgbModal,
     private router: Router, 
-    private http: HttpClient,
+    private httpService: HttpService,
     private toastr: ToastrService,
     private route: ActivatedRoute) {
     
@@ -64,7 +65,7 @@ export class AddEmployeeComponent {
     
 
     if (this.id) {
-      this.http.get("http://localhost:8089/employees/"+this.id).subscribe((results: any) => {
+      this.httpService.get("http://localhost:8089/employees/"+this.id).subscribe((results: any) => {
         // console.log(results.data)
         this.empDetails = results.data
 
@@ -108,7 +109,7 @@ export class AddEmployeeComponent {
 
     if(this.id > ''){ //updating
       //make http post request
-      this.http.patch("http://localhost:8089/employees/update/"+this.id, this.addEmp.value).subscribe((results: any) => {
+      this.httpService.patch("http://localhost:8089/employees/update/"+this.id, this.addEmp.value).subscribe((results: any) => {
         // console.log(results.status)
         if(results.status){
           this.toastr.success('Employee Updated Successfully', 'Success!');
@@ -125,7 +126,7 @@ export class AddEmployeeComponent {
       })
     }else{
         // make http post request
-      this.http.post("http://localhost:8089/employees/add", this.addEmp.value).subscribe((results: any) => {
+      this.httpService.post("http://localhost:8089/employees/add", this.addEmp.value).subscribe((results: any) => {
         // console.log(results.status)
         if(results.status){
           this.toastr.success('Employee Added Successfully', 'Success!');
@@ -153,7 +154,7 @@ export class AddEmployeeComponent {
 
 
   getUnitList(){
-    this.http.get("http://localhost:8089/units").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/units").subscribe((results: any) => {
       this.unitList =  results.data
       // console.log(this.unitList)
     })
@@ -168,7 +169,7 @@ export class AddEmployeeComponent {
       // Replace 'uploads' with your desired folder path within the assets directory
       const uploadUrl = 'http://localhost:8089/upload';
 
-      this.http.post(uploadUrl, formData)
+      this.httpService.post(uploadUrl, formData)
         .subscribe(
           response => {
             console.log('File uploaded successfully.');

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpService } from 'src/app/services/http.service';
 import { AddUnitComponent } from './add-unit/add-unit.component';
 
 @Component({
@@ -19,7 +20,7 @@ export class UnitsComponent {
   priv: any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal,
     private router: Router) {
 
@@ -34,7 +35,7 @@ export class UnitsComponent {
 
   getUnitDetails(){
     //unit
-    this.http.get("http://localhost:8089/units").subscribe((results: any) => { 
+    this.httpService.get("http://localhost:8089/units").subscribe((results: any) => { 
       this.unitsDetails =  results.data
       // console.log(this.unitsDetails.result)
       setTimeout(()=>{

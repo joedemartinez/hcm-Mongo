@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpService } from 'src/app/services/http.service';
 import { AddPostingComponent } from '../add-posting/add-posting.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class ManagePostingsComponent {
   date: any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal,
     private router: Router) {
 
@@ -29,7 +30,7 @@ export class ManagePostingsComponent {
 
   getPostingDetails(){
     //posting
-    this.http.get("http://localhost:8089/postings").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/postings").subscribe((results: any) => {
       this.postingDetails =  results.data
       
       setTimeout(()=>{
@@ -75,7 +76,7 @@ export class ManagePostingsComponent {
     if(proceed){
       // console.log(id)
       //make http post request
-      this.http.delete("http://localhost:8089/postings/delete/"+id).subscribe((results: any) => {
+      this.httpService.delete("http://localhost:8089/postings/delete/"+id).subscribe((results: any) => {
 
         if(results.status){
           this.toastr.success('Posting Deleted Successfully', 'Success!');

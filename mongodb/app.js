@@ -1,5 +1,5 @@
 const express = require('express')
-const { connectToDb, getDb } = require('./db')
+const { connectToDb, getDb } = require('./db') 
 const bodyParser = require('body-parser');
 const cors = require('cors') //CORS policy: No 'Access-Control-Allow-Origin' h 
 const bcrypt = require('bcryptjs');
@@ -7,8 +7,19 @@ const {ObjectId} = require('mongodb')
 
 // //JSON WEB TOKEN
 const jwt = require('jsonwebtoken');
-const expiresIn = '1h'; // Set the expiration time (e.g., 1 hour)
+const expiresIn = '1d'; // Set the expiration time (e.g., 1 hour)
+//jwt request auth
+function authenticate(req, res, next) {
+  const token = req.headers.authorization.split(' ')[1];
 
+  try {
+      const decoded = jwt.verify(token, 'secretKey');
+      req.emp_id = decoded.emp_id; // Store the user ID in the request object for future use
+      next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+      res.status(401).json({ error: 'Invalid token' }); // or redirect to login page
+  }
+}
 
 //FILE UPLOAD
 const multer  = require('multer')
@@ -97,7 +108,7 @@ app.post("/login", (req, res) => {
       if (verified) {
           const token = jwt.sign({ user: doc[0].emp_id, user_type: doc[0].user_type, photo: doc[0].employee[0].photo, name: doc[0].employee[0].name  }, 'secretKey', { expiresIn });
           // const token = jwt.sign({ userId: doc.emp_id }, 'secretKey');
-          res.send({status: true, data: doc, token: token})
+          res.send({status: true, token: token})
       } else {
           res.send({status: false, message: "Oops! Error occured, Wrong Staff ID or Password"})
       }   
@@ -108,7 +119,7 @@ app.post("/login", (req, res) => {
 })
 
 // //change password 
-app.patch('/password/update/:id', (req, res) => {
+app.patch('/password/update/:id', authenticate, (req, res) => {
   const {newPassword, confirmPassword}  = req.body
   const emp_id = req.params.id
   password = bcrypt.hashSync(newPassword, 10) //encode password
@@ -127,7 +138,7 @@ app.patch('/password/update/:id', (req, res) => {
 
 //DOCUMENTS FROM THE VARIOUS COLLECTIONS
 //USERS
-app.get('/users', (req, res) => {
+app.get('/users',authenticate, (req, res) => {
     let users = []
     db.collection('users')
     .find()
@@ -141,7 +152,7 @@ app.get('/users', (req, res) => {
     })
 })
 //using aggregate to join users and emp table
-app.get('/userEmp', (req, res) => {
+app.get('/userEmp',authenticate, (req, res) => {
         const agg = [
         {
         '$lookup': {
@@ -158,7 +169,7 @@ app.get('/userEmp', (req, res) => {
     })
 })
 //insert user
-app.post("/users/add", (req, res) => {
+app.post("/users/add",authenticate, (req, res) => {
   let {emp_id, password, user_type} = req.body
   password = bcrypt.hashSync(password, 10)
 
@@ -179,7 +190,7 @@ app.post("/users/add", (req, res) => {
 
 })
 //employees but not users
-app.get('/usersList', (req, res) => {
+app.get('/usersList',authenticate, (req, res) => {
  
     
   const agg = [
@@ -207,7 +218,7 @@ app.get('/usersList', (req, res) => {
   })
 })
 //search records
-app.get("/users/:id", (req, res) => {
+app.get("/users/:id",authenticate,(req, res) => {
   let emp_id = req.params.id;
   const agg = [
     {
@@ -233,7 +244,7 @@ app.get("/users/:id", (req, res) => {
   })
 })
 // //reset password 
-app.patch('/users/reset/:id', (req, res) => {
+app.patch('/users/reset/:id',authenticate, (req, res) => {
     const {emp_id}  = req.body
     password = bcrypt.hashSync('password', 10) //encode password
     const lupdate = {
@@ -248,7 +259,7 @@ app.patch('/users/reset/:id', (req, res) => {
       })
   })
 // //delete
-app.delete('/users/delete/:id', (req, res) => {
+app.delete('/users/delete/:id',authenticate, (req, res) => {
     const emp_id  = req.params.id
     db.collection('users')
     .deleteOne({emp_id: emp_id})
@@ -259,7 +270,7 @@ app.delete('/users/delete/:id', (req, res) => {
     })
 })
 // //update
-app.patch('/users/update/:id', (req, res) => {
+app.patch('/users/update/:id',authenticate, (req, res) => {
   const {emp_id}  = req.body
   const lupdate = req.body
     db.collection('users')
@@ -275,7 +286,7 @@ app.patch('/users/update/:id', (req, res) => {
 
 
 // EMPLOYEES
-app.get('/employees', (req, res) => {
+app.get('/employees', authenticate, (req, res) => {
     const agg = [
         {
           '$lookup': {
@@ -292,7 +303,7 @@ app.get('/employees', (req, res) => {
     })
 })
 //insert employee
-app.post("/employees/add", (req, res) => {
+app.post("/employees/add",authenticate, (req, res) => {
   let employee = req.body
 
   db.collection('emp_table')
@@ -305,7 +316,7 @@ app.post("/employees/add", (req, res) => {
 
 })
 //search records
-app.get("/employees/:id", (req, res) => {
+app.get("/employees/:id",authenticate, (req, res) => {
   let emp_id = req.params.id;
   const agg = [
     {
@@ -324,7 +335,7 @@ app.get("/employees/:id", (req, res) => {
   })
 })
 // //update
-app.patch('/employees/update/:id', (req, res) => {
+app.patch('/employees/update/:id',authenticate, (req, res) => {
   const emp_id  = req.params.id
   const lupdate = req.body
     db.collection('emp_table')
@@ -336,7 +347,7 @@ app.patch('/employees/update/:id', (req, res) => {
     })
 })
 // //delete
-app.delete('/employees/delete/:id', (req, res) => {
+app.delete('/employees/delete/:id',authenticate, (req, res) => {
   const emp_id  = req.params.id
   db.collection('emp_table')
   .deleteOne({_id: new ObjectId(emp_id)})
@@ -350,7 +361,7 @@ app.delete('/employees/delete/:id', (req, res) => {
 
 
 //UNITS
-app.get('/units', (req, res) => {
+app.get('/units',authenticate, (req, res) => {
     const agg = [
         {
           '$lookup': {
@@ -367,7 +378,7 @@ app.get('/units', (req, res) => {
     })
 })
 //insert unit
-app.post("/units/add", (req, res) => {
+app.post("/units/add",authenticate, (req, res) => {
   let unit = req.body
 
   db.collection('units')
@@ -380,7 +391,7 @@ app.post("/units/add", (req, res) => {
 
 })
 //search unit
-app.get("/units/:id", (req, res) => {
+app.get("/units/:id",authenticate, (req, res) => {
   let _id = req.params.id;
   const agg = [
     {
@@ -399,7 +410,7 @@ app.get("/units/:id", (req, res) => {
   })
 })
 // //update
-app.patch('/units/update/:id', (req, res) => {
+app.patch('/units/update/:id',authenticate, (req, res) => {
   const unit  = req.body
   const unit_id = req.params.id
     db.collection('units')
@@ -411,7 +422,7 @@ app.patch('/units/update/:id', (req, res) => {
     })
 })
 // //delete
-app.delete('/units/delete/:id', (req, res) => {
+app.delete('/units/delete/:id',authenticate, (req, res) => {
   const unit_id = req.params.id
   db.collection('units')
   .deleteOne({_id: new ObjectId(unit_id)})
@@ -429,7 +440,7 @@ app.delete('/units/delete/:id', (req, res) => {
 
 
 //POSTINGS
-app.get('/postings', (req, res) => {
+app.get('/postings',authenticate, (req, res) => {
     const agg = [
         {
           '$lookup': {
@@ -446,7 +457,7 @@ app.get('/postings', (req, res) => {
     })
 })
 //insert unit
-app.post("/postings/add", (req, res) => {
+app.post("/postings/add",authenticate, (req, res) => {
   let posting = req.body
 
   db.collection('postings_table')
@@ -459,7 +470,7 @@ app.post("/postings/add", (req, res) => {
 
 })
 //search records
-app.get("/postings/:id", (req, res) => {
+app.get("/postings/:id",authenticate, (req, res) => {
   let emp_id = req.params.id;
   const agg = [
     {
@@ -485,7 +496,7 @@ app.get("/postings/:id", (req, res) => {
   })
 })
 // //update
-app.patch('/postings/update/:id', (req, res) => {
+app.patch('/postings/update/:id',authenticate, (req, res) => {
   const posting  = req.body
   const posting_id = req.params.id
     db.collection('postings_table')
@@ -497,7 +508,7 @@ app.patch('/postings/update/:id', (req, res) => {
     })
 })
 // //delete
-app.delete('/postings/delete/:id', (req, res) => {
+app.delete('/postings/delete/:id',authenticate, (req, res) => {
   const posting_id = req.params.id
   db.collection('postings_table')
   .deleteOne({_id: new ObjectId(posting_id)})
@@ -512,7 +523,7 @@ app.delete('/postings/delete/:id', (req, res) => {
 
 
 //PROMOTION
-app.get('/promotions', (req, res) => {
+app.get('/promotions',authenticate, (req, res) => {
     let promotions = []
     db.collection('promotions')
     .find()
@@ -531,7 +542,7 @@ app.get('/promotions', (req, res) => {
 
 
 //PROMOTION HISTORY 
-app.get('/promotionHistory', (req, res) => {
+app.get('/promotionHistory',authenticate, (req, res) => {
     let promotions = []
     db.collection('promotion_history')
     .find()
@@ -550,7 +561,7 @@ app.get('/promotionHistory', (req, res) => {
 
 
 //EXITS
-app.get('/exits', (req, res) => {
+app.get('/exits',authenticate, (req, res) => {
     let exits = []
     db.collection('exits')
     .find()
@@ -569,7 +580,7 @@ app.get('/exits', (req, res) => {
 
 //DASHBOARD COUNTS FOR CARD
 //employee
-app.get('/count/employees', (req, res) => {
+app.get('/count/employees',authenticate, (req, res) => {
     const agg = [
         {
           '$count': 'count'
@@ -581,7 +592,7 @@ app.get('/count/employees', (req, res) => {
     })
 })
 //units
-app.get('/count/units', (req, res) => {
+app.get('/count/units',authenticate, (req, res) => {
     const agg = [
         {
           '$count': 'count'
@@ -593,7 +604,7 @@ app.get('/count/units', (req, res) => {
     })
 })
 //users
-app.get('/count/users', (req, res) => {
+app.get('/count/users',authenticate, (req, res) => {
     const agg = [
         {
           '$count': 'count'
@@ -605,7 +616,7 @@ app.get('/count/users', (req, res) => {
     })
 })
 //exits
-app.get('/count/exits', (req, res) => {
+app.get('/count/exits',authenticate, (req, res) => {
     const agg = [
         {
           '$count': 'count'
@@ -617,7 +628,7 @@ app.get('/count/exits', (req, res) => {
     })
 })
 //Bar Chart
-app.get("/chartVal", (req, res) => {
+app.get("/chartVal",authenticate, (req, res) => {
   const agg = [
     {
       $lookup: {

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpService } from 'src/app/services/http.service';
 import { AddPostingComponent } from './add-posting/add-posting.component';
 
 @Component({
@@ -18,7 +19,7 @@ export class PostingsComponent {
   priv:any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal,
     private router: Router) {
 
@@ -31,7 +32,7 @@ export class PostingsComponent {
 
   getPostingDetails(){
     //posting
-    this.http.get("http://localhost:8089/postings").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/postings").subscribe((results: any) => {
       this.postingDetails =  results.data
       // console.log(this.postingDetails)
       setTimeout(()=>{

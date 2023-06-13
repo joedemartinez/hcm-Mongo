@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpService } from 'src/app/services/http.service';
 import { AddPromotionComponent } from './add-promotion/add-promotion.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class PromotionsComponent {
   date: any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal) {
 
     this.breadcrumb.setPageDetails('Promotions','Promotions','/promotions','')//breadcrumb values
@@ -29,7 +30,7 @@ export class PromotionsComponent {
 
   getPromotionDetails(){
     //promotions
-    this.http.get("http://localhost:8089/promotions").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/promotions").subscribe((results: any) => {
       this.promotionHistory =  results.data
       // console.log(this.promotionDetails)
       setTimeout(()=>{
@@ -49,7 +50,7 @@ export class PromotionsComponent {
 
   getPromotionHistory(){
     //promotions history
-    this.http.get("http://localhost:8089/promotionHistory").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/promotionHistory").subscribe((results: any) => {
       this.promotionDetails =  results.data
       // console.log(this.promotionHistory)
     })

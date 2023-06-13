@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpService } from 'src/app/services/http.service';
 import { AddUserComponent } from './add-user/add-user.component';
 
 @Component({
@@ -19,7 +20,7 @@ export class UsersComponent {
   priv:any
   
   constructor ( private breadcrumb: BreadcrumbService, private toastr: ToastrService,
-    private http: HttpClient,
+    private httpService: HttpService,
     private modal: NgbModal,
     private router: Router) {
 
@@ -35,7 +36,7 @@ export class UsersComponent {
 
   getUsersDetails(){
     //using aggregate to join users and emp table
-    this.http.get("http://localhost:8089/userEmp").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/userEmp").subscribe((results: any) => {
       this.usersDetails =  results.data
       // console.log(this.usersDetails)
       setTimeout(()=>{
@@ -55,7 +56,7 @@ export class UsersComponent {
 
   getEmpList(){
     //users 
-    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empList =  results.data
       
     })

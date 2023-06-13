@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { HttpService } from 'src/app/services/http.service';
 
 @Component({
   selector: 'app-add-promotion',
@@ -18,7 +19,7 @@ export class AddPromotionComponent {
   constructor (private fb: FormBuilder, 
     private modal: NgbModal,
     private router: Router, 
-    private http: HttpClient,
+    private httpService: HttpService,
     private toastr: ToastrService) {
   
 
@@ -44,7 +45,7 @@ export class AddPromotionComponent {
   submitForm(){
 
     //make http post request
-    this.http.post("http://localhost:8089/promotions/add", this.addPromotion.value).subscribe((results: any) => {
+    this.httpService.post("http://localhost:8089/promotions/add", this.addPromotion.value).subscribe((results: any) => {
 
       if(results.status){
         this.toastr.success('Promotion Added Successfully', 'Success!');
@@ -62,7 +63,7 @@ export class AddPromotionComponent {
   }
 
   getEmpList(){
-    this.http.get("http://localhost:8089/employees").subscribe((results: any) => {
+    this.httpService.get("http://localhost:8089/employees").subscribe((results: any) => {
       this.empList =  results.data
       // console.log(this.empList)
     })

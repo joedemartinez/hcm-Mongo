@@ -16,14 +16,21 @@ export class MenuBarComponent {
   log: any
   emp_name:any
   photo:any
+  token:any
 
   constructor( private logout: LogoutService,
     private modal: NgbModal){  }
 
   ngOnInit(){
     // Read the initial value from local storage
-    this.emp_name = localStorage.getItem('name');
-    this.photo = localStorage.getItem('photo')
+    this.token = localStorage.getItem('jwt');
+    //get token values
+    const parts = this.token.split('.');
+    // Decode the base64-encoded payload
+    const payload = JSON.parse(atob(parts[1]))
+
+    this.emp_name = payload.name;
+    this.photo = payload.photo
   }
 
   //open modal
