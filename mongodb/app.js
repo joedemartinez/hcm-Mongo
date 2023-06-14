@@ -10,6 +10,11 @@ const jwt = require('jsonwebtoken');
 const expiresIn = '1d'; // Set the expiration time (e.g., 1 hour)
 //jwt request auth
 function authenticate(req, res, next) {
+  if (!req.headers || !req.headers.authorization) {
+    res.status(401).json({ error: 'Authorization header missing' });
+    return;
+  }
+  
   const token = req.headers.authorization.split(' ')[1];
 
   try {
