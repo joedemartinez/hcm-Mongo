@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors') //CORS policy: No 'Access-Control-Allow-Origin' h 
 const bcrypt = require('bcryptjs');
 const {ObjectId} = require('mongodb')
+require('dotenv').config();
 
 // //JSON WEB TOKEN
 const jwt = require('jsonwebtoken');
@@ -14,11 +15,10 @@ function authenticate(req, res, next) {
     res.status(401).json({ error: 'Authorization header missing' });
     return;
   }
-  
   const token = req.headers.authorization.split(' ')[1];
 
   try {
-      const decoded = jwt.verify(token, 'secretKey');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.emp_id = decoded.emp_id; // Store the user ID in the request object for future use
       next(); // Proceed to the next middleware or route handler
   } catch (error) {
@@ -111,7 +111,7 @@ app.post("/login", (req, res) => {
       result = doc[0].password
       const verified = bcrypt.compareSync(password, result);
       if (verified) {
-          const token = jwt.sign({ user: doc[0].emp_id, user_type: doc[0].user_type, photo: doc[0].employee[0].photo, name: doc[0].employee[0].name  }, 'secretKey', { expiresIn });
+          const token = jwt.sign({ user: doc[0].emp_id, user_type: doc[0].user_type, photo: doc[0].employee[0].photo, name: doc[0].employee[0].name  }, process.env.JWT_SECRET, { expiresIn });
           // const token = jwt.sign({ userId: doc.emp_id }, 'secretKey');
           res.send({status: true, token: token})
       } else {
