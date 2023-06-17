@@ -57,7 +57,7 @@ let db
 connectToDb( (fn) => {
     if (!fn) {
         //port number
-        app.listen(8089, () => {
+        app.listen(8089 || process.env.PORT, () => {
             console.log('App listening on Port 8089')
         })
         db = getDb()
